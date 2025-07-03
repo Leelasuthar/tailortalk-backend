@@ -7,24 +7,35 @@ import logging
 from app.config.settings import settings
 
 logger = logging.getLogger(__name__)
-
+import json
+import os
+from dotenv import load_dotenv
+load_dotenv(override=True)  # Load environment variables from .env file
 class GoogleCalendarService:
     """Enhanced Google Calendar Service with comprehensive functionality"""
     
     def __init__(self):
         """Initialize Google Calendar service"""
         try:
-            self.credentials = service_account.Credentials.from_service_account_file(
-                settings.GOOGLE_APPLICATION_CREDENTIALS,
-                scopes=['https://www.googleapis.com/auth/calendar']
+            # ✅ Read JSON credentials from env variable
+            service_account_json = os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON")
+
+            if not service_account_json:
+                raise ValueError("GOOGLE_SERVICE_ACCOUNT_JSON is not set in environment variables.")
+
+            credentials_dict = json.loads(service_account_json)
+
+            self.credentials = service_account.Credentials.from_service_account_info(
+                credentials_dict,
+                scopes=["https://www.googleapis.com/auth/calendar"]
             )
-            self.service = build('calendar', 'v3', credentials=self.credentials)
+            self.service = build("calendar", "v3", credentials=self.credentials)
             self.calendar_id = settings.CALENDAR_ID
-            logger.info("Google Calendar service initialized successfully")
+            logger.info("✅ Google Calendar service initialized successfully")
         except Exception as e:
-            logger.error(f"Failed to initialize Google Calendar service: {e}")
+            logger.error(f"❌ Failed to initialize Google Calendar service: {e}")
             raise
-    
+
     def test_connection(self) -> bool:
         """Test calendar connection"""
         try:
