@@ -1,0 +1,22 @@
+# Python environment
+venv/
+.env
+__pycache__/
+*.pyc
+
+# Deployment/infra configs
+railway.toml
+
+# Google credentials (common patterns)
+credentials.json
+service-account-key.json
+google-credentials.json
+service_account.json
+*.secret.json
+*.credentials.json
+*cred*.json
+*service*.json
+*service-account-key*.json
+
+# Optional: Ignore credential folder if you store JSONs inside it
+credentials/
